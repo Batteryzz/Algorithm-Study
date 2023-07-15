@@ -1,59 +1,58 @@
 package bruteForce;
 
-import java.util.Scanner;
-import java.util.Stack;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class ps23284 {
-	static boolean[] arr;
-	static int N;
-	static StringBuilder sb;
-	static boolean[] visit;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+    static int n;
+    static int[] arr;
+    static boolean[] visit;
+    static StringBuilder sb = new StringBuilder();
 
-		N = sc.nextInt();
-		sb = new StringBuilder();
-		arr = new boolean[N * 2];
-		visit = new boolean[N*2];
-		dfs(1, 0);
-		System.out.println(sb);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-	}
+        n = Integer.parseInt(br.readLine());
 
-	private static void dfs(int depth, int pick) {
-		if (N == pick) {
-			Stack<Integer> st = new Stack<>();
-			int idx = 1;
-			for (int i = 0; i < N*2; i++) {
-				if (arr[i]) {
-					st.push(idx++);
-				} else {
-					sb.append(st.pop()).append(' ');
-				}
-			}
-			sb.append('\n');
-			return;
-		}
+        arr = new int[n + 1];
+        visit = new boolean[n + 1];
 
-		for (int i = 0; i < N*2-1 ; i++) {
-			if (!visit[i]) {
-				visit[i] = true;
+        recur(1, 0);
 
-				if (pick < depth && pick < N) {
-					arr[i] = true;
-					dfs(depth, pick + 1);
-					arr[i] = false;
-				} else {
-					arr[i] = false;
-					dfs(depth + 1, pick);
-					arr[i] = true;
-				}
-			}
-			visit[i] = false;
-		}
+        bw.write(sb.toString());
+        bw.flush();
+    }
 
-		
-	}
+    private static void recur(int depth, int next) {
+        if (depth == n + 1) {
+            for (int i = 1; i <= n; i++)
+                sb.append(arr[i]).append(" ");
+
+            sb.append("\n");
+            System.out.println(sb);
+            return;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            if (visit[i]) // 숫자 썼으면 컨티뉴
+                continue;
+
+            if (i > arr[depth - 1] && i < next)
+                break;
+
+            arr[depth] = i;
+            visit[i] = true;
+            if (i >= next) //지금 숫자가 나와야 할 숫자보다 크거나 같으면, 즉 다음 수로 +1 해도되면
+                recur(depth + 1, i + 1);
+            else
+                recur(depth + 1, next);
+            visit[i] = false;
+        }
+    }
 
 }
