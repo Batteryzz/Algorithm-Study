@@ -1,11 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
-
-import javax.management.Query;
 
 public class ps27971 {
 	static int N, M, A, B;
@@ -20,6 +16,8 @@ public class ps27971 {
 		A = Integer.parseInt(st.nextToken());
 		B = Integer.parseInt(st.nextToken());
 
+		int X = -1;
+
 		int[] arr = new int[N + 1];
 
 		for (int i = 0; i < M; i++) {
@@ -28,49 +26,57 @@ public class ps27971 {
 			int right = Integer.parseInt(st.nextToken());
 
 			for (int a = left; left <= right; left++) {
-				arr[left] = 101;
+				arr[left] = X;
+			}
+		}
+
+		for (int i = 1; i <= N; i++) {
+			if (arr[i] == X)
+				continue;
+
+			int left = X;
+			int right = X;
+
+			if (i - A >= 0 && arr[i - A] != X) {
+				left = i - A;
 			}
 
-			Queue<Integer> q = new LinkedList<>();
-			int cnt = 0;
-			int index = 0;
-
-			int first = 0;
-			int second = 0;
-
-			if (A > B) {
-				first = A;
-				second = B;
-			} else {
-				first = B;
-				second = A;
+			if (i - B >= 0 && arr[i - B] != X) {
+				right = i - B;
 			}
 
-			q.add(first);
+			if (left == X || right == X) {
 
-			while (!q.isEmpty()) {
-				int now = q.poll();
-				
-				if(index+now > N ) {
-					if(index +)
-				}
-				
-				if (arr[index + now] != 101) {
-					cnt++;
-					index += now;
-					q.add(first);
-				} else {
-					if (arr[index + second] != 101) {
-						cnt++;
-						index += second;
-						q.add(first);
-					}
+				if (left == X && right == X) {
+					arr[i] = X;
+					continue;
+				} else if (left == X) {
+					arr[i] = arr[right] + 1;
+					continue;
+				} else if (right == X) {
+					arr[i] = arr[left] + 1;
+					continue;
 				}
 
 			}
-			System.out.println(cnt);
+
+			arr[i] = Math.min(arr[left] + 1, arr[right] + 1);
 
 		}
+
+		if (arr[N] <= 0) {
+			System.out.println(-1);
+		} else
+			System.out.println(arr[N]);
+		
+		/*  for (int i = 1; i <= N; ++i) 좋은 풀이!
+	            if (!blocked[i]) {
+	                if (i - A >= 0 && !blocked[i - A])
+	                    dp[i] = Math.min(dp[i - A], dp[i]);
+	                if (i - B >= 0)
+	                    dp[i] = Math.min(dp[i - B], dp[i]);
+	                dp[i]++;
+	            }*/
 
 	}
 
